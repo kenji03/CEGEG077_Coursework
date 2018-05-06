@@ -80,7 +80,11 @@ function trackLocation() {
 
 var currentlocationlayer;
 function onSuccess(position) {
-	
+	if (mymap.hasLayer(currentlocationlayer)){
+		mymap.removeLayer(currentlocationlayer);
+	}else{
+		alert("There is no marker");
+	}
 	
 	
 	// create a geoJSON feature -
