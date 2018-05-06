@@ -81,7 +81,6 @@ function trackLocation() {
 var currentlocationlayer;
 function onSuccess(position) {
 	if (mymap.hasLayer(currentlocationlayer)){
-		alert ("Remove the marker")
 		mymap.removeLayer(currentlocationlayer);
 	}else{
 		alert("There is no marker");
