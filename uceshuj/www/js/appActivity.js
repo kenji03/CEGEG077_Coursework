@@ -67,11 +67,12 @@ function calculateDistance(lat1, lon1, lat2, lon2, unit) {
 	return dist;
 }
 
+
 // create functions for tracking user's Location
 function trackLocation() {
 	if (navigator.geolocation) {
 	confirm("show your current position")
-	 var options = {enableHighAccuracy:true,frequency:3000};
+	 var options = {watch:true,enableHighAccuracy:true,frequency:3000};
 	navigator.geolocation.watchPosition(onSuccess,onError,options);
  } else {
 	document.getElementById('showLocation').innerHTML = "Geolocation is not supported by this browser.";
@@ -81,6 +82,7 @@ function trackLocation() {
 var currentlocationlayer;
 function onSuccess(position) {
 	if (mymap.hasLayer(currentlocationlayer)){
+		alert("There is a marker");
 		mymap.removeLayer(currentlocationlayer);
 	}else{
 		alert("There is no marker");
@@ -104,6 +106,7 @@ function onSuccess(position) {
 	var testMarkerPink = L.AwesomeMarkers.icon({
 		icon: 'play',
 		markerColor: 'pink'
+	
 	});	
 	
 	currentlocationlayer = L.geoJSON(geojsonFeature, {
@@ -121,3 +124,4 @@ function onError(error) {
 	alert('code: '    + error.code    + '\n' +
 		  'message: ' + error.message + '\n');
 }
+
