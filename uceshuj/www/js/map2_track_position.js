@@ -24,8 +24,8 @@ function trackLocation() {
 
 var currentlocationlayer;
 function showPosition(position) {
-	if (mymap2.hasLayer(currentlocationlayer)=="markertrue"){
-		alert ("already added marker"+mymap2.hasLayer(currentlocationlayer))
+	if (mymap2.hasLayer(currentlocationlayer)){
+		alert ("already added marker")
 		mymap2.removeLayer(currentlocationlayer);
 	}
 	
