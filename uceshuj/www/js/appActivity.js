@@ -72,7 +72,7 @@ function calculateDistance(lat1, lon1, lat2, lon2, unit) {
 function trackLocation() {
 	if (navigator.geolocation) {
 	confirm("show your current position")
-	 var options = {watch:true,enableHighAccuracy:true,frequency:3000};
+	 var options = {watch:true,enableHighAccuracy:true,frequency:1000};
 	navigator.geolocation.watchPosition(onSuccess,onError,options);
  } else {
 	document.getElementById('showLocation').innerHTML = "Geolocation is not supported by this browser.";
@@ -82,12 +82,8 @@ function trackLocation() {
 var currentlocationlayer;
 function onSuccess(position) {
 	if (mymap.hasLayer(currentlocationlayer)){
-		alert("There is a marker");
 		mymap.removeLayer(currentlocationlayer);
-	}else{
-		alert("There is no marker");
 	}
-	
 	
 	// create a geoJSON feature -
 	var geojsonFeature = {
@@ -116,7 +112,7 @@ function onSuccess(position) {
 		}).addTo(mymap).bindPopup("<b>"+geojsonFeature.properties.name+"("+
 		geojsonFeature.properties.popupContent+" )</b>");
 		
-	mymap.flyToBounds(currentlocationlayer.getBounds(),{maxZoom:15});
+	mymap.flyToBounds(currentlocationlayer.getBounds(),{maxZoom:18});
 }
 
 // onError Callback receives a PositionError object
