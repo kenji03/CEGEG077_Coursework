@@ -72,7 +72,7 @@ function calculateDistance(lat1, lon1, lat2, lon2, unit) {
 function trackLocation() {
 	if (navigator.geolocation) {
 	confirm("show your current position")
-	 var options = {watch:true,enableHighAccuracy:true,frequency:1000};
+	 var options = {watch:true,enableHighAccuracy:true,frequency:500};
 	navigator.geolocation.watchPosition(onSuccess,onError,options);
  } else {
 	document.getElementById('showLocation').innerHTML = "Geolocation is not supported by this browser.";
@@ -80,9 +80,43 @@ function trackLocation() {
 }
 
 var currentlocationlayer;
+var myQuestions;
+var quizContainer;
+var resultsContainer;
+var submitButton;
+
 function onSuccess(position) {
 	if (mymap.hasLayer(currentlocationlayer)){
 		mymap.removeLayer(currentlocationlayer);
+	}
+	
+	if (geoJSONlocations.length!==0){
+		for (i in geoJSONlocations){
+			lat = geoJSONlocations[i][1]
+			lng = geoJSONlocations[i][0]
+			var distance = calculateDistance(position.coords.latitude, position.coords.longitude, lat,lng, 'K');
+			if (distance < 0.12){
+				confirm("you are close to a quiz point, you want to quiz??")
+				// create function for creating quiz form
+				myQuestions = [
+					{
+						question: geoJSONquestions[i],
+						answers: {
+							choice1: geoJSONchoices[i][0],
+							choice2: geoJSONchoices[i][1],
+							choice3: geoJSONchoices[i][2],
+							choice4: geoJSONchoices[i][3],
+						},
+						correctAnswer: 'choice1'
+					},			
+				];
+			quizContainer = document.getElementById('quiz');
+			resultsContainer = document.getElementById('results');
+			submitButton = document.getElementById('submit');
+			generateQuiz(myQuestions, quizContainer, resultsContainer, submitButton);	
+				
+			}
+		}
 	}
 	
 	// create a geoJSON feature -
@@ -120,4 +154,140 @@ function onError(error) {
 	alert('code: '    + error.code    + '\n' +
 		  'message: ' + error.message + '\n');
 }
+
+// add AJAX call and response method to code
+var client;
+function getGeoJSONfile(){
+	client = new XMLHttpRequest();
+	client.open('GET', 'http://developer.cege.ucl.ac.uk:30282/getGeoJSONfile' ,true);
+	client.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	client.onreadystatechange = geoJSONResponse;
+	client.send();
+}
+
+// create the code to wait for the response from the data server, and process the response once it is received
+function geoJSONResponse() {
+	// this function listens out for the server to say that the data is ready - i.e. has state 4
+	if (client.readyState == 4) {
+	  // once the data is ready, process the data
+	  var geoJSONString = client.responseText;
+	  processGeoJSONfile(geoJSONString);
+  }
+}
+
+var geoJSONquestions = [];
+var geoJSONchoices = [];
+var geoJSONlocations = [];
+// get GeoJSON file from database
+function processGeoJSONfile(geoJSONString){
+	alert("start processing")
+	// convert the string of downloaded data to JSON
+	var geoJSON = JSON.parse(geoJSONString);
+	var questionpointlayer = L.geoJson(geoJSON,{
+		// use point to layer to create the points
+		pointToLayer: function (feature, latlng){
+			// look at the GeoJSON file - specifically at the properties - to see the earthquake magnitude and use a different marker depending on this value
+			// also include a pop-up that shows the place value of the earthquakes
+			geoJSONquestions.push([feature.properties.question])
+			geoJSONchoices.push([feature.properties.choice_1,feature.properties.choice_2,feature.properties.choice_3,feature.properties.choice_4])
+			geoJSONlocations.push([latlng.lng,latlng.lat])
+			return L.marker(latlng, {icon:testMarkerBlue}).bindPopup("<b>"+"Name: "+feature.properties.first_name+" "+feature.properties.last_name+"<br />"+feature.properties.module_code+"</b>");
+		},
+    }).addTo(mymap);
+	alert(geoJSONlocations[0]);
+}
+
+var testMarkerBlue = L.AwesomeMarkers.icon({
+    icon: 'play',
+    markerColor: 'blue'
+    });
+
+
+function generateQuiz(questions, quizContainer, resultsContainer, submitButton){
+
+    function showQuestions(questions, quizContainer){
+        // we'll need a place to store the output and the answer choices
+        var output = [];
+        var answers;
+
+        // for each question...
+        for(var i=0; i<questions.length; i++){
+            
+            // first reset the list of answers
+            answers = [];
+
+            // for each available answer...
+            for(letter in questions[i].answers){
+
+                // ...add an html radio button
+                answers.push(
+                    '<label>'
+                        + '<input type="radio" name="question'+i+'" value="'+letter+'">'
+                        + letter + ': '
+                        + questions[i].answers[letter]
+                    + '</label><br />'
+                );
+            }
+            // add this question and its answers to the output
+            output.push(
+                '<div class="question">' + questions[i].question + '</div>'
+                + '<div class="answers">' + answers.join('') + '</div>'
+            );
+        }
+
+        // finally combine our output list into one string of html and put it on the page
+        quizContainer.innerHTML = output.join('');
+		alert(output.join(''));
+    }
+
+
+    function showResults(questions, quizContainer, resultsContainer){
+        
+        // gather answer containers from our quiz
+        var answerContainers = quizContainer.querySelectorAll('.answers');
+        
+        // keep track of user's answers
+        var userAnswer = '';
+        var numCorrect = 0;
+        
+        // for each question...
+        for(var i=0; i<questions.length; i++){
+			
+            userAnswer = (answerContainers[i].querySelector('input[name=question'+i+']:checked')||{}).value;
+           
+            // if answer is correct
+            if(userAnswer===questions[i].correctAnswer){
+                // add to the number of correct answers
+                resultsContainer.innerHTML = 'Correct';
+                
+                // color the answers green
+                answerContainers[i].style.color = 'lightgreen';
+            }
+            // if answer is wrong or blank
+            else{
+				resultsContainer.innerHTML = 'Incorrect';
+                // color the answers red
+                answerContainers[i].style.color = 'red';
+            }
+        }
+    }
+
+    // show questions right away
+    showQuestions(questions, quizContainer);
+    
+    // on submit, show results
+    submitButton.onclick = function(){
+        showResults(questions, quizContainer, resultsContainer);
+    }
+
+}
+		
+
+function retakeQuiz(){
+	generateQuiz(myQuestions, quizContainer, resultsContainer, submitButton);
+	quizContainer = document.getElementById('quiz');
+	resultsContainer = document.getElementById('results');
+	submitButton = document.getElementById('submit');	
+}
+
 

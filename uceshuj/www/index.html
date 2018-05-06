@@ -74,9 +74,9 @@
 			crossorigin=""></script>
 			
 	<!-- the following links incorporate the CSS required for custom icon creation -->
-	<link rel="stylesheet" href="ionicons.min.css">
-	<link rel="stylesheet" href="leaflet.awesome-markers.css">
-	<script src="leaflet.awesome-markers.js"></script>
+	<link rel="stylesheet" href="css/ionicons.min.css">
+	<link rel="stylesheet" href="css/leaflet.awesome-markers.css">
+	<script src="js/leaflet.awesome-markers.js"></script>
   </head>
   <body onload='trackLocation();'>
     <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
@@ -140,8 +140,12 @@
             <!-- the mapid div will hold the map -->
 			<div id="mapid" style="width: 1200px; height: 300px;"></div>
           </div>
-          <div class="demo-graphs mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--8-col">
-            
+          <div id = "loopresults" class="demo-graphs mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--8-col">
+            <button id="start loop" onclick="getGeoJSONfile()">Click here to start</button><br />
+			<div id="quiz">Question</div></br>
+			<button id="submit">Get Result</button>	
+			<div id="results"></div><br />
+			<button id="retakequiz" onclick="retakeQuiz()">Retake</button>
           </div>
           <div class="demo-cards mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-grid mdl-grid--no-spacing">
             <div class="demo-updates mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--12-col-desktop">
