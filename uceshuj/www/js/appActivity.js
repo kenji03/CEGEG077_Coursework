@@ -97,7 +97,7 @@ function onSuccess(position) {
 			lat = geoJSONlocations[i][1]
 			lng = geoJSONlocations[i][0]
 			var distance = calculateDistance(position.coords.latitude, position.coords.longitude, lat,lng, 'K');
-			if (distance < 0.12){
+			if (distance < 0.01){
 				// create function for creating quiz form
 				myQuestions = [
 				{
