@@ -81,6 +81,8 @@ function trackLocation() {
 
 var currentlocationlayer;
 var myQuestions;
+var Questions;
+var test;
 var quizContainer;
 var resultsContainer;
 var submitButton;
@@ -96,25 +98,31 @@ function onSuccess(position) {
 			lng = geoJSONlocations[i][0]
 			var distance = calculateDistance(position.coords.latitude, position.coords.longitude, lat,lng, 'K');
 			if (distance < 0.12){
-				confirm("you are close to a quiz point, you want to quiz??")
 				// create function for creating quiz form
 				myQuestions = [
-					{
-						question: geoJSONquestions[i],
-						answers: {
-							choice1: geoJSONchoices[i][0],
-							choice2: geoJSONchoices[i][1],
-							choice3: geoJSONchoices[i][2],
-							choice4: geoJSONchoices[i][3],
-						},
-						correctAnswer: 'choice1'
-					},			
+				{
+					question: geoJSONquestions[i],
+					answers: {
+						choice1: geoJSONchoices[i][0],
+						choice2: geoJSONchoices[i][1],
+						choice3: geoJSONchoices[i][2],
+						choice4: geoJSONchoices[i][3],
+					},
+					correctAnswer: 'choice1'
+				},
 				];
-			quizContainer = document.getElementById('quiz');
-			resultsContainer = document.getElementById('results');
-			submitButton = document.getElementById('submit');
-			generateQuiz(myQuestions, quizContainer, resultsContainer, submitButton);	
-				
+				alert(Questions);
+				if (Questions==undefined || isEquivalent(myQuestions,Questions)==false){
+					confirm("you are close to a quiz point, you want to quiz??");
+					Questions = myQuestions
+					quizContainer = document.getElementById('quiz');
+					resultsContainer = document.getElementById('results');
+					submitButton = document.getElementById('submit');
+					generateQuiz(myQuestions, quizContainer, resultsContainer, submitButton);
+				}else if(isEquivalent(myQuestions,Questions)){
+					alert("same quiz")
+				}
+						
 			}
 		}
 	}
@@ -237,7 +245,6 @@ function generateQuiz(questions, quizContainer, resultsContainer, submitButton){
 
         // finally combine our output list into one string of html and put it on the page
         quizContainer.innerHTML = output.join('');
-		alert(output.join(''));
     }
 
 
@@ -290,4 +297,32 @@ function retakeQuiz(){
 	submitButton = document.getElementById('submit');	
 }
 
+function isEquivalent(a, b) {
+    // Create arrays of property names
+    var aProps = Object.getOwnPropertyNames(a[0]);
+    var bProps = Object.getOwnPropertyNames(b[0]);
+	// alert(aProps[2]);
+	// alert(bProps.length);
+    // If number of properties is different,
+    // objects are not equivalent
+    if (aProps.length != bProps.length) {
+		// alert(aProps.length);
+		// alert(bProps.length);
+        return false;
+    }
+    for (var i= 0; i < aProps.length; i++) {
+        var propName = aProps[i];
 
+        // If values of same property are not equal,
+        // objects are not equivalent
+        if (a[0].propName !== b[0].propName) {
+			alert(a[0].propName);
+			alert(b[0].propName);
+            return false;
+        }
+    }
+
+    // If we made it this far, objects
+    // are considered equivalent
+    return true;
+}
