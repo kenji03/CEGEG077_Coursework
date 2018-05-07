@@ -97,8 +97,7 @@ function onSuccess(position) {
 			lat = geoJSONlocations[i][1]
 			lng = geoJSONlocations[i][0]
 			var distance = calculateDistance(position.coords.latitude, position.coords.longitude, lat,lng, 'K');
-			
-			if (distance < 0.01){
+			if (distance < 0.05){
 				// create function for creating quiz form
 				myQuestions = [
 				{
@@ -109,7 +108,7 @@ function onSuccess(position) {
 						choice3: geoJSONchoices[i][2],
 						choice4: geoJSONchoices[i][3],
 					},
-					correctAnswer: 'choice1'
+					correctAnswer: geoJSONanswers[i]
 				},
 				];
 				
@@ -187,6 +186,7 @@ function geoJSONResponse() {
 var geoJSONquestions = [];
 var geoJSONchoices = [];
 var geoJSONlocations = [];
+var geoJSONanswers = [];
 // get GeoJSON file from database
 function processGeoJSONfile(geoJSONString){
 	alert("start processing")
@@ -200,10 +200,11 @@ function processGeoJSONfile(geoJSONString){
 			geoJSONquestions.push([feature.properties.question])
 			geoJSONchoices.push([feature.properties.choice_1,feature.properties.choice_2,feature.properties.choice_3,feature.properties.choice_4])
 			geoJSONlocations.push([latlng.lng,latlng.lat])
+			geoJSONanswers.push([feature.properties.correct_answer])
+			
 			return L.marker(latlng, {icon:testMarkerBlue}).bindPopup("<b>"+"Name: "+feature.properties.first_name+" "+feature.properties.last_name+"<br />"+feature.properties.module_code+"</b>");
 		},
     }).addTo(mymap);
-	alert(geoJSONlocations[0]);
 }
 
 var testMarkerBlue = L.AwesomeMarkers.icon({
@@ -256,15 +257,15 @@ function generateQuiz(questions, quizContainer, resultsContainer, submitButton){
         
         // keep track of user's answers
         var userAnswer = '';
-        var numCorrect = 0;
         
         // for each question...
         for(var i=0; i<questions.length; i++){
 			
             userAnswer = (answerContainers[i].querySelector('input[name=question'+i+']:checked')||{}).value;
-           
+            // alert(questions[i].correctAnswer);
+			// alert(userAnswer);
             // if answer is correct
-            if(userAnswer===questions[i].correctAnswer){
+            if(userAnswer==questions[i].correctAnswer){
                 // add to the number of correct answers
                 resultsContainer.innerHTML = 'Correct';
                 
