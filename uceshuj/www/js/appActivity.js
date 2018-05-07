@@ -111,7 +111,7 @@ function onSuccess(position) {
 					correctAnswer: 'choice1'
 				},
 				];
-				alert(Questions);
+				
 				if (Questions==undefined || isEquivalent(myQuestions,Questions)==false){
 					confirm("you are close to a quiz point, you want to quiz??");
 					Questions = myQuestions
@@ -120,7 +120,7 @@ function onSuccess(position) {
 					submitButton = document.getElementById('submit');
 					generateQuiz(myQuestions, quizContainer, resultsContainer, submitButton);
 				}else if(isEquivalent(myQuestions,Questions)){
-					alert("same quiz")
+	
 				}
 						
 			}
