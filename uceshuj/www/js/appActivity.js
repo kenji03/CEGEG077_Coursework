@@ -133,9 +133,7 @@ function onSuccess(position) {
 				},
 				];
 				
-				if (Questions!==undefined){
-						alert(isEquivalent(myQuestions,Questions));
-					}
+
 				if (Questions==undefined || (isEquivalent(myQuestions,Questions))==false){
 					confirm("you are close to a quiz point, you want to quiz??");
 					Questions = myQuestions
