@@ -133,11 +133,8 @@ function onSuccess(position) {
 				},
 				];
 				
-				if (Questions!==undefined){
-						alert(Questions[0].question);
-					}
 				if (Questions==undefined || (isEquivalent(myQuestions,Questions))==false){
-					confirm("you are close to a quiz point, you want to quiz??");
+					alert("you are close to a quiz point, a quiz will be coming");
 					Questions = myQuestions
 					document.getElementById('quiz').style.marginTop = "20px";
 					document.getElementById('quiz').style.lineHeight = "2";
@@ -349,6 +346,9 @@ function isEquivalent(a, b) {
     var bQues = b[0].question;
 	var aAns = a[0].answers;
     var bAns = b[0].answers;
+	if (aQues!==bQues){
+		return false;
+	}
 	// alert(aProps[2]);
 	// alert(bProps.length);
     // If number of properties is different,
