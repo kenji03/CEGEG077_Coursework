@@ -117,8 +117,8 @@ function onSuccess(position) {
 			lng = geoJSONlocations[i][0]
 			var distance = calculateDistance(position.coords.latitude, position.coords.longitude, lat,lng, 'K');
 			
-			if (distance < 0.015){
-				alert(distance);
+			if (distance < 0.02){
+
 				// create function for creating quiz form
 				myQuestions = [
 				{
@@ -132,11 +132,11 @@ function onSuccess(position) {
 					correctAnswer: geoJSONanswers[i]
 				},
 				];
-				alert(myQuestions);
-				alert(Questions);
-				alert(isEquivalent(myQuestions,Questions)==false);
+				
+				
 				if (Questions==undefined || isEquivalent(myQuestions,Questions)==false){
 					confirm("you are close to a quiz point, you want to quiz??");
+					alert(isEquivalent(myQuestions,Questions)==false);
 					Questions = myQuestions
 					document.getElementById('quiz').style.marginTop = "20px";
 					document.getElementById('quiz').style.lineHeight = "2";
