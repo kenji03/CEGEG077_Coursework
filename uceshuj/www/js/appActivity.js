@@ -133,8 +133,10 @@ function onSuccess(position) {
 				},
 				];
 				
-				
-				if (Questions==undefined){
+				if (Questions!==undefined){
+						alert(isEquivalent(myQuestions,Questions));
+					}
+				if (Questions==undefined || (isEquivalent(myQuestions,Questions))==false){
 					confirm("you are close to a quiz point, you want to quiz??");
 					Questions = myQuestions
 					document.getElementById('quiz').style.marginTop = "20px";
@@ -147,22 +149,7 @@ function onSuccess(position) {
 					resultsContainer = document.getElementById('results');
 					submitButton = document.getElementById('submit');
 					generateQuiz(myQuestions, quizContainer, resultsContainer, submitButton);
-				}else if(isEquivalent(myQuestions,Questions)==false){
-					confirm("you are close to a quiz point, you want to quiz??");
-					alert((isEquivalent(myQuestions,Questions)));
-					Questions = myQuestions
-					document.getElementById('quiz').style.marginTop = "20px";
-					document.getElementById('quiz').style.lineHeight = "2";
-					document.getElementById('quiz').style.fontSize = "large";
-					quizContainer = document.getElementById('quiz');
-					document.getElementById('results').style.marginTop = "10px";
-					document.getElementById('results').style.lineHeight = "1.3";
-					document.getElementById('results').style.fontSize = "large";
-					resultsContainer = document.getElementById('results');
-					submitButton = document.getElementById('submit');
-					generateQuiz(myQuestions, quizContainer, resultsContainer, submitButton);
-				}
-						
+				}			
 			}
 		}
 	}
@@ -358,25 +345,16 @@ function generateQuiz(questions, quizContainer, resultsContainer, submitButton){
 
 function isEquivalent(a, b) {
     // Create arrays of property names
-    var aProps = Object.getOwnPropertyNames(a[0]);
-    var bProps = Object.getOwnPropertyNames(b[0]);
+    var aQues = a[0].question;
+    var bQues = b[0].question;
+	var aAns = a[0].answers;
+    var bAns = b[0].answers;
 	// alert(aProps[2]);
 	// alert(bProps.length);
     // If number of properties is different,
     // objects are not equivalent
-    if (aProps.length != bProps.length) {
-		// alert(aProps.length);
-		// alert(bProps.length);
-        return false;
-    }
-    for (var i= 0; i < aProps.length; i++) {
-        var propName = aProps[i];
-
-        // If values of same property are not equal,
-        // objects are not equivalent
-        if (a[0].propName !== b[0].propName) {
-			alert(a[0].propName);
-			alert(b[0].propName);
+    for (var i= 0; i < aAns.length; i++) {
+        if (aAns['choice'+i] !== bAns['choice'+i]) {
             return false;
         }
     }
