@@ -79,7 +79,7 @@ function calculateDistance(lat1, lon1, lat2, lon2, unit) {
 // create functions for tracking user's Location
 function trackLocation() {
 	if (navigator.geolocation) {
-	confirm("show your current position")
+	// confirm("show your current position")
 	 var options = {watch:true,enableHighAccuracy:true,frequency:500};
 	navigator.geolocation.watchPosition(onSuccess,onError,options);
  } else {
@@ -112,7 +112,7 @@ function onSuccess(position) {
 			lng = geoJSONlocations[i][0]
 			var distance = calculateDistance(position.coords.latitude, position.coords.longitude, lat,lng, 'K');
 			
-			if (distance < 0.8){
+			if (distance < 0.015){
 				// create function for creating quiz form
 				myQuestions = [
 				{
@@ -239,10 +239,7 @@ function processGeoJSONfile(geoJSONString){
 }
 
 
-function StopProcessGeoJSONfile(){
-	alert("Are you Stop the Quiz?");
-	mymap.removeLayer(questionpointlayer);
-}
+
 
 var testMarkerBlue = L.AwesomeMarkers.icon({
     icon: 'play',
