@@ -18,20 +18,25 @@ id: 'mapbox.streets'
 var popup = L.popup();
 
 function onMapClick(e) {
-	var popupContent = '<a href="#" class="open-popup">Click open new window of a form</a>'
 	var longitude = e.latlng.lng;
 	var latitude = e.latlng.lat;
+	
+	
+	var popupContent = '<div><label for="firstname">First Name: </label><input type="text" size="15" id="firstname1"/></div>'+
+			'<div><label for="lastname">Last Name: </label><input type="text" size="15" id="lastname1"/></div>'+
+			'<div"><label>Module Code: </label></div><select name="moduleselectbox" id="moduleselectbox1">'+
+				'<option value="">Select Module</option><option>CEGEG075</option>'+
+				'<option>CEGEG076</option><option>CEGEG077</option>'+
+				'<option>CEGEG129</option></select>'+
+			'<div><label for="location_name">Point Name: </label><input type="text" size="15" id="pointname"/></div>'+
+			'<div><label for="latitude">Latitude</label><input type="text" name="latitude" size="15" id="latitude1"/></div>'+
+			'<div><label for="longitude">Longitude</label><input type="text" name="longitude" size="15" id="longitude1"/></div>'+
+			'<div><button id="startUpdate" onclick="startDataUpdate()">Start Data Update</button></div>';
 	popup
 		.setLatLng(e.latlng)
-		.setContent("<b>You clicked the map at </b><b align='center' style='margin-top:0.1em; margin-bottom:0em; font-size:100%;'>("+e.latlng.lng.toFixed(4).toString()+","+e.latlng.lat.toFixed(4).toString()+")<br />"+popupContent)
+		.setContent("<b>You clicked the map at </b><b align='center' style='popupcontent'>("+e.latlng.lng.toFixed(5).toString()+","+e.latlng.lat.toFixed(5).toString()+")<br />"+popupContent)
 		.openOn(mymap);	
 		
-	$('.open-popup').click(function(d) {
-		d.preventDefault();
-		var OpenWindow= window.open("formcode.html?"+longitude+"&"+latitude, '_blank', 'width=400,height=500');
-		
-		OpenWindow.document.write(e.latlng.lng);
-    });
 };
 // now add the click event detector to the map
 mymap.on('click', onMapClick);
@@ -101,7 +106,7 @@ function onSuccess(position) {
 	}
 	var distanceWarrenSt = calculateDistance(position.coords.latitude, position.coords.longitude, lat_warrentSt,lng_warrentSt, 'K');
 	
-	document.getElementById('showDistanceWarrenSt').innerHTML = "To Warren Street: "+distanceWarrenSt.toFixed(4) + " (km)";
+	document.getElementById('showDistanceWarrenSt').innerHTML = "To Warren Street: "+distanceWarrenSt.toFixed(2) + " (km)";
 	
 	if (geoJSONlocations.length!==0){
 		
@@ -361,9 +366,48 @@ function isEquivalent(a, b) {
             return false;
         }
     }
-
     // If we made it this far, objects
     // are considered equivalent
     return true;
 }
 
+// add function to test that everything is working and upload it to the js sub directory
+// create a function to get the first bit of text data from the from
+function startDataUpdate(){
+	confirm("start data update");
+	
+	var pointname = document.getElementById("pointname").value;
+	var firstname = document.getElementById("firstname1").value;
+	var lastname = document.getElementById("lastname1").value;
+	var module = document.getElementById("moduleselectbox1").value;
+	var postString = "pointname="+pointname+"&firstname="+firstname +"&lastname=" +lastname +"&module=" +module;
+	alert(firstname+" "+lastname+" "+module);
+	
+	
+	var latitude = document.getElementById("latitude1").value;
+	var longitude = document.getElementById("longitude1").value;
+	
+	postString = postString +"&latitude=" + latitude + "&longitude=" + longitude;
+	alert(postString)
+	updateData(postString)
+}
+
+// add AJAX call and response method to code
+var client;
+
+function updateData(postString){
+	client = new XMLHttpRequest();
+	client.open('POST', 'http://developer.cege.ucl.ac.uk:30282/updateData' ,true);
+	client.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	client.onreadystatechange = dataUpdate;
+	client.send(postString);
+}
+
+// create the code to wait for the response from the data server, and process the response once it is received 
+function dataUpdate(){
+	// this function listens out for the server to say tha the data is ready 
+	if (client.readyState == 4){
+		// change the DIV to show the response
+		alert ("update is ready")
+	}
+}

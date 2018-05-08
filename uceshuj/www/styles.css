@@ -269,3 +269,10 @@ _:-ms-input-placeholder, :root .demo-graph {
 	background-color: #00BCD4;
 	color: #37474F;
 }
+
+.popupcontent {
+	margin-top:0.1em; 
+	margin-bottom:0.1em; 
+	font-size:60%;
+	float: left;
+}

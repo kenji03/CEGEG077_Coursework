@@ -78,7 +78,7 @@
 	<link rel="stylesheet" href="leaflet.awesome-markers.css">
 	<script src="js/leaflet.awesome-markers.js"></script>
   </head>
-  <body >
+  <body onload='trackLocation();'>
     <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
       <header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
         <div class="mdl-layout__header-row">
@@ -122,15 +122,7 @@
         </header>
         <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
           <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">home</i>Home</a>
-          <div class="dropdown">
-		  <a class="mdl-navigation__link dropbtn" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">inbox</i>Quiz</a>
-			
-			<div class="dropdown-content">
-					<a href="" onclick='getGeoJSONfile(); return false;' id="startquiz">Start Quiz</a>
-					<a href="" onclick='trackLocation();return false;'>Stop Quiz</a>
-			</div>
-		  </div>
-			
+		  <a class="mdl-navigation__link" href="" onclick='getGeoJSONfile(); return false;'><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">inbox</i>Quiz</a>
           <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">delete</i>Trash</a>
           <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">report</i>Spam</a>
           <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">forum</i>Forums</a>
