@@ -1,112 +1,266 @@
-<html>
-<head>
-	<!-- the following links add the CSS and Javascript required for the Leaflet Map -->
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"
-	integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
-crossorigin=""/>
+<!doctype html>
+<!--
+  Material Design Lite
+  Copyright 2015 Google Inc. All rights reserved.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+      https://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Material Design Lite</title>
 
-	<script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
-integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
-crossorigin=""></script>
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/android-desktop.png">
 
-	<!-- the following links incorporate the CSS required for custom icon creation -->
-	<link rel="stylesheet" href=" ionicons.min.css">
-	<link rel="stylesheet" href="leaflet.awesome-markers.css">
-	<script src="leaflet.awesome-markers.js"></script>
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
 
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <link rel="shortcut icon" href="images/favicon.png">
+
+    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+    <!--
+    <link rel="canonical" href="http://www.example.com/">
+    -->
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="styles.css">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+    <style>
+    #view-source {
+      position: fixed;
+      display: block;
+      right: 0;
+      bottom: 0;
+      margin-right: 40px;
+      margin-bottom: 40px;
+      z-index: 900;
+    }
+    </style>
+	
 	<!-- the following CSS is used to set the size of the Map -->
 	<style type="text/css">
 		#mapid { height: 180px; }
-</style>
-</head>
-
-<body>
-	<!-- the mapid div will hold the map -->
-	<div id="mapid" style="width: 600px; height: 400px;"></div>
-	<button id='trackLocation' onclick='trackLocation();return false;'>Click Me to Get Your Location</button>
-
-	<!-- the following script will load the map and set the default view and zoom, as well as loading the basemap tiles -->
-	<script>
-		// load the map
-		var mymap = L.map('mapid').setView([51.505, -0.09], 15);
-
-		// load the tiles
-		L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-		maxZoom: 18,
-		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-		'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>,'+
-		'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-		id: 'mapbox.streets'
-		}).addTo(mymap);
-		
-		// create a custom popup
-		var popup = L.popup();
-		// create an event detector to wait for the user's click event and then use the popup to show them where they clicked
-		// note that you don't need to do any complicated maths to convert screen coordinates to real world coordiantes - the Leaflet API does this for you
-		function onMapClick(e) {
-			popup
-				.setLatLng(e.latlng)
-				.setContent("You clicked the map at " + e.latlng.toString())
-				.openOn(mymap);
-		}
-		// now add the click event detector to the map
-		mymap.on('click', onMapClick);
-		
-		function trackLocation() {
-	if (navigator.geolocation) {
-	confirm("show your current position")
-	 var options = {watch:true,enableHighAccuracy:true,frequency:3000};
-	navigator.geolocation.watchPosition(onSuccess,onError,options);
- } else {
-	document.getElementById('showLocation').innerHTML = "Geolocation is not supported by this browser.";
- }
-}
-
-var currentlocationlayer;
-function onSuccess(position) {
-	if (mymap.hasLayer(currentlocationlayer)){
-		alert("There is a marker");
-		mymap.removeLayer(currentlocationlayer);
-	}
+	</style>	
 	
-	
-	// create a geoJSON feature -
-	var geojsonFeature = {
-		"type": "Feature",
-		"properties": {
-		"name": "Your Location",
-		"popupContent": [position.coords.longitude.toFixed(4), position.coords.latitude.toFixed(4)]
-		},
-		"geometry": {
-		"type": "Point",
-		"coordinates": [position.coords.longitude, position.coords.latitude]
-		}
-	};	
-	
-	// create Maker icon 
-	var testMarkerPink = L.AwesomeMarkers.icon({
-		icon: 'play',
-		markerColor: 'pink'
-	
-	});	
-	
-	currentlocationlayer = L.geoJSON(geojsonFeature, {
-			pointToLayer: function (feature, latlng) {
-				return L.marker(latlng, {icon:testMarkerPink});
-			}
-		}).addTo(mymap).bindPopup("<b>"+geojsonFeature.properties.name+"("+
-		geojsonFeature.properties.popupContent+" )</b>");
-     mymap.flyToBounds(currentlocationlayer.getBounds(),{maxZoom:18});
-}
+	<!-- the following links add the CSS and Javascript required for the Leaflet Map -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css" 
+			integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw==" 
+			crossorigin=""/> 
 
-// onError Callback receives a PositionError object
-function onError(error) {
-	alert('code: '    + error.code    + '\n' +
-		  'message: ' + error.message + '\n');
-}
+	<script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
+			integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
+			crossorigin=""></script>
+			
+	<!-- the following links incorporate the CSS required for custom icon creation -->
+	<link rel="stylesheet" href="css/ionicons.min.css">
+	<link rel="stylesheet" href="css/leaflet.awesome-markers.css">
+	<script src="js/leaflet.awesome-markers.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+			
+  </head>
+  <body onload='trackLocation();getDistance();'>
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+      <header class="demo-header mdl-layout__header mdl-color--grey-800 mdl-color-text--white">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Home</span>
+          <div class="mdl-layout-spacer"></div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+            <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
+              <i class="material-icons">search</i>
+            </label>
+            <div class="mdl-textfield__expandable-holder">
+              <input class="mdl-textfield__input" type="text" id="search">
+              <label class="mdl-textfield__label" for="search">Enter your query...</label>
+            </div>
+          </div>
+          <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
+            <li class="mdl-menu__item"> <a href="leafletGeoJSON2.html">About</a></About</li>
+            <li class="mdl-menu__item" onclick="replaceGraphs()">Contact</li> 
+			<li class="mdl-menu__item" onclick="menuClicked()">Legal information</li>
+          </ul>
+        </div>
+      </header>
+	  
+      <div class="demo-drawer mdl-layout__drawer mdl-color--grey-800 mdl-color-text--white">
+        <header class="demo-drawer-header">
+          <img src="images/user.jpg" class="demo-avatar">
+          <div class="demo-avatar-dropdown">
+            <span>hello@example.com</span>
+            <div class="mdl-layout-spacer"></div>
+            <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+              <i class="material-icons" role="presentation">arrow_drop_down</i>
+              <span class="visuallyhidden">Accounts</span>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+              <li class="mdl-menu__item">hello@example.com</li>
+              <li class="mdl-menu__item">info@example.com</li>
+              <li class="mdl-menu__item"><i class="material-icons">add</i>Add another account...</li>
+            </ul>
+          </div>
+        </header>
+        <nav class="demo-navigation mdl-navigation mdl-color--white">
+          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--black material-icons" role="presentation">home</i>Home</a>
+          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--black material-icons" role="presentation">inbox</i>Inbox</a>
+          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--black material-icons" role="presentation">flag</i>Updates</a>
+          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--black material-icons" role="presentation">people</i>Social</a>
+          <div class="mdl-layout-spacer"></div>
+          <a class="mdl-navigation__link" href=""><i class="mdl-color-text--blue-900 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
+        </nav>
+      </div>
+	  
+      <main class="mdl-layout__content mdl-color--grey-200">
+        <div class="mdl-grid demo-content">
+          <div class="demo-charts mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid">
+			<!-- the mapid div will hold the map -->
+			<div id="mapid1" style="width: 1200px; height: 300px;"></div>
+			<div style="margin-top: 10px; font-size:120%;" class="name">
 
-
-
-	</script>
-</body>
+				<div class="onoffswitch">
+					<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+					<label class="onoffswitch-label" for="myonoffswitch">
+						<span class="onoffswitch-inner"></span>
+						<span class="onoffswitch-switch"></span>
+					</label>
+				</div>
+              </div>
+		  </div>
+		  
+          <div class="demo-graphs mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--7-col mdl-cell--8-col-tablet mdl-cell--7-col"  id="graphdiv">
+		  <!-- add question form -->
+            <h2 style="margin-bottom: 0.5em;">Question Form</h2>
+			<p style="font-size: 1.2em; color: red;">***Please Fill in all Entry Filed</p>
+			<div class="name">
+			<label for="first_name">First Name:</label>
+			<input type="text" size="20" id="firstname"/>
+			<label for="last_name">Last Name:</label>
+			<input type="text" size="20" id="lastname" />
+			</div><br />
+	
+			<p>Module Code</p>
+				<select name="moduleselectbox" id="moduleselectbox">
+					<option value="">Select Module</option>
+					<option value="CEGEG034">CEGEG034: Mapping Science</option>
+					<option value="CEGEG075">CEGEG075: Image Understanding</option>
+					<option value="CEGEG076">CEGEG076: Spatio-Temporal Data Mining</option>
+					<option value="CEGEG077">CEGEG077: Web and Mobile Apps and Programming</option>
+					<option value="CEGEG082">CEGEG082: GIS Principles and Technology</option>
+					<option value="CEGEG129">CEGEG129: Spatial Databases and Data Management</option>
+					<option value="CEOGG125">CEOGG125: Principles of Spatial Analysis</option>
+					<option value="CEOGG126">CEOGG126: Representation, Structures and Algorithms</option>
+				</select>
+				<br />
+				
+			<label for="location_name">Location Name:</label><input type="text" size="25" id="location_name"/><br />
+			<label for="question">Question:</label><input type="text" size="25" id="question"/><br />
+			
+			<p style="font-size: 1.1em; color: red;">***Please Check a Radio Button of the Answer</p>
+			<label for="choice1"><input type="radio" name="answer" value="choice1"/>Choice1:</label>
+			<input type="text" size="25" id="choice1"/><br />
+			<label for="choice2"><input type="radio" name="answer" value="choice2"/>Choice2:</label>
+			<input type="text" size="25" id="choice2"/><br />
+			<label for="choice3"><input type="radio" name="answer" value="choice3"/>Choice3:</label>
+			<input type="text" size="25" id="choice3"/><br />
+			<label for="choice4"><input type="radio" name="answer" value="choice4"/>Choice4:</label>
+			<input type="text" size="25" id="choice4"/><br />
+			
+	
+			<div class="name">
+			<label for="longitude">Longitude: </label>
+			<input type="text" size="20" id="longitude"/>
+			<label for="latitude">Latitude: </label>
+			<input type="text" size="20" id="latitude"/>
+			</div><br />
+	
+			<div id="myProgress" style="margin-bottom:0.6em;">
+				<div id="dataUploadResult"></div>
+				<div id="myBar"></div>
+			</div>
+			<p>	
+			<button id="startUpload" onclick="startDataUpload()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
+			Start Data Upload</button>
+			</p>
+          </div>
+		  
+          <div class="demo-cards mdl-cell mdl-cell--5-col mdl-cell--8-col-tablet mdl-grid mdl-grid--no-spacing">
+            <div class="demo-updates mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col mdl-cell--4-col-tablet mdl-cell--12-col-desktop">
+             <div class="demo-charts mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid"> 
+				<!-- the mapid div will hold the map -->
+				<p style="font-size:120%; margin-bottom:0.1em;">Current Location</p>
+				<div id="mapid2" style="width: 400px; height: 300px;"></div>
+            </div>
+             
+            </div>
+            <div class="demo-separator mdl-cell--1-col"></div>
+            <div class="demo-options mdl-card mdl-color--deep-white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--3-col-tablet mdl-cell--12-col-desktop">
+              <div class="mdl-card__supporting-text mdl-color-text--black">
+                <h3>View options</h3>
+                <ul>
+                  <li>
+                    <label for="chkbox1" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+                      <input type="checkbox" id="chkbox1" class="mdl-checkbox__input">
+                      <span class="mdl-checkbox__label">Click per object</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label for="chkbox2" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+                      <input type="checkbox" id="chkbox2" class="mdl-checkbox__input">
+                      <span class="mdl-checkbox__label">Views per object</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label for="chkbox3" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+                      <input type="checkbox" id="chkbox3" class="mdl-checkbox__input">
+                      <span class="mdl-checkbox__label">Objects selected</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label for="chkbox4" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+                      <input type="checkbox" id="chkbox4" class="mdl-checkbox__input">
+                      <span class="mdl-checkbox__label">Objects viewed</span>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+              <div class="mdl-card__actions mdl-card--border mdl-color--grey-800">
+                <a href="#" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white">Change location</a>
+                <div class="mdl-layout-spacer"></div>
+                <i class="mdl-color-text--red material-icons">location_on</i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+ 
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+	<script src="js/appActivity.js"></script>
+	<script src="js/map2_track_position.js"></script>
+	<script src="js/uploadData.js"></script>
+  </body>
 </html>

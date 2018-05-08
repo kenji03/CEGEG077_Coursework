@@ -15,17 +15,18 @@ id: 'mapbox.streets'
 // create functions for tracking user's Location
 function trackLocation() {
 	if (navigator.geolocation) {
-	confirm("show your current position")
-	navigator.geolocation.watchPosition(showPosition);
+	confirm("Track Location")
+	var options = {watch:true,enableHighAccuracy:true,frequency:500};
+	navigator.geolocation.watchPosition(onSuccess,onError,options);
  } else {
 	document.getElementById('showLocation').innerHTML = "Geolocation is not supported by this browser.";
  }
 }
 
 var currentlocationlayer;
-function showPosition(position) {
+
+function onSuccess(position) {
 	if (mymap2.hasLayer(currentlocationlayer)){
-		alert ("already added marker")
 		mymap2.removeLayer(currentlocationlayer);
 	}
 	
@@ -55,5 +56,11 @@ function showPosition(position) {
 		}).addTo(mymap2).bindPopup("<b>"+geojsonFeature.properties.name+"("+
 		geojsonFeature.properties.popupContent+" )</b>");
 		
-	mymap2.flyToBounds(currentlocationlayer.getBounds(),{maxZoom:13});
+	mymap2.flyToBounds(currentlocationlayer.getBounds(),{maxZoom:15});
+}
+
+// onError Callback receives a PositionError object
+function onError(error) {
+	alert('code: '    + error.code    + '\n' +
+		  'message: ' + error.message + '\n');
 }
