@@ -134,9 +134,8 @@ function onSuccess(position) {
 				];
 				
 				
-				if (Questions==undefined || isEquivalent(myQuestions,Questions)==false){
+				if (Questions==undefined){
 					confirm("you are close to a quiz point, you want to quiz??");
-					alert(isEquivalent(myQuestions,Questions)==false);
 					Questions = myQuestions
 					document.getElementById('quiz').style.marginTop = "20px";
 					document.getElementById('quiz').style.lineHeight = "2";
@@ -148,8 +147,20 @@ function onSuccess(position) {
 					resultsContainer = document.getElementById('results');
 					submitButton = document.getElementById('submit');
 					generateQuiz(myQuestions, quizContainer, resultsContainer, submitButton);
-				}else if(isEquivalent(myQuestions,Questions)){
-	
+				}else if(isEquivalent(myQuestions,Questions)==false){
+					confirm("you are close to a quiz point, you want to quiz??");
+					alert((isEquivalent(myQuestions,Questions)));
+					Questions = myQuestions
+					document.getElementById('quiz').style.marginTop = "20px";
+					document.getElementById('quiz').style.lineHeight = "2";
+					document.getElementById('quiz').style.fontSize = "large";
+					quizContainer = document.getElementById('quiz');
+					document.getElementById('results').style.marginTop = "10px";
+					document.getElementById('results').style.lineHeight = "1.3";
+					document.getElementById('results').style.fontSize = "large";
+					resultsContainer = document.getElementById('results');
+					submitButton = document.getElementById('submit');
+					generateQuiz(myQuestions, quizContainer, resultsContainer, submitButton);
 				}
 						
 			}
