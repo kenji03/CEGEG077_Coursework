@@ -2,9 +2,6 @@ function menuClicked(){
 	alert("You clicked the menu");
 }
 
-function replaceGraphs(){
-	document.getElementById("graphdiv").innerHTML="<img src='images/ucl.png'>"
-}
 
 // load the map
 var mymap = L.map('mapid').setView([51.505, -0.09], 13);
@@ -20,34 +17,45 @@ id: 'mapbox.streets'
 // create funtions for popup displaying clicked location	
 var popup = L.popup();
 
-// create an event detector to wait for the user's click event and then use the popup to show them where they clicked
-// note that you don't need to do any complicated maths to convert screen coordinates to real world coordiantes - the Leaflet API does this for you
-
 function onMapClick(e) {
+	var popupContent = '<a href="#" class="open-popup">Click open new window of a form</a>'
+	var longitude = e.latlng.lng;
+	var latitude = e.latlng.lat;
 	popup
 		.setLatLng(e.latlng)
-		.setContent("<b>You clicked the map at </b><b align='center' style='margin-top:0.1em; margin-bottom:0em; font-size:100%;' onclick='onPopupContentClick()'>("+e.latlng.lng.toFixed(4).toString()+","+e.latlng.lat.toFixed(4).toString()+") </b>")
+		.setContent("<b>You clicked the map at </b><b align='center' style='margin-top:0.1em; margin-bottom:0em; font-size:100%;'>("+e.latlng.lng.toFixed(4).toString()+","+e.latlng.lat.toFixed(4).toString()+")<br />"+popupContent)
 		.openOn(mymap);	
-}
+		
+	$('.open-popup').click(function(d) {
+		d.preventDefault();
+		var OpenWindow= window.open("formcode.html?"+longitude+"&"+latitude, '_blank', 'width=400,height=500');
+		
+		OpenWindow.document.write(e.latlng.lng);
+    });
+};
 // now add the click event detector to the map
 mymap.on('click', onMapClick);
 
 // create a function for calculating distance 
-function getDistance() {
-		alert('getting distance');
+// function getDistance() {
+		// alert('getting distance');
 		// getDistanceFromPoint is the function called once the distance has been found
-		navigator.geolocation.getCurrentPosition(getDistanceFromPoint);
-}
+		// navigator.geolocation.getCurrentPosition(getDistanceFromPoint);}
+		
 
-function getDistanceFromPoint(position) {
+var lat_warrentSt = 51.524479;
+var lng_warrentSt = -0.137998;
+		
+// function getDistanceFromPoint(position) {
 		// find the coordinates of a point using this website:
 		// these are the coordinates for Warren Street
-		var lat = 51.524616;
-		var lng = -0.13818;
 		// return the distance in kilometers
-		var distance = calculateDistance(position.coords.latitude, position.coords.longitude, lat,lng, 'K');
-		document.getElementById('showDistanceUCL').innerHTML = "Distance: " + distance;
-}
+		// var distanceUCL = calculateDistance(position.coords.latitude, position.coords.longitude, lat_UCL,lng_UCL, 'K');
+		// var distanceWarrenSt = calculateDistance(position.coords.latitude, position.coords.longitude, lat_warrentSt,lng_warrentSt, 'K');
+		// var distance = calculateDistance(position.coords.latitude, position.coords.longitude, lat,lng, 'K');
+		// document.getElementById('showDistanceUCL').innerHTML = distanceUCL;
+		// document.getElementById('showDistanceWarrenSt').innerHTML = distanceWarrenSt;
+// }
 
 // code adapted from https://www.htmlgoodies.com/beyond/javascript/calculate-the-distance-between-two-points-inyour-web-apps.html
 function calculateDistance(lat1, lon1, lat2, lon2, unit) {
@@ -91,14 +99,20 @@ function onSuccess(position) {
 	if (mymap.hasLayer(currentlocationlayer)){
 		mymap.removeLayer(currentlocationlayer);
 	}
+	var distanceWarrenSt = calculateDistance(position.coords.latitude, position.coords.longitude, lat_warrentSt,lng_warrentSt, 'K');
+	
+	document.getElementById('showDistanceWarrenSt').innerHTML = "To Warren Street: "+distanceWarrenSt.toFixed(4) + " (km)";
 	
 	if (geoJSONlocations.length!==0){
+		
 		for (i in geoJSONlocations){
+			
+			
 			lat = geoJSONlocations[i][1]
 			lng = geoJSONlocations[i][0]
 			var distance = calculateDistance(position.coords.latitude, position.coords.longitude, lat,lng, 'K');
 			
-			if (distance < 0.016){
+			if (distance < 0.8){
 				// create function for creating quiz form
 				myQuestions = [
 				{
@@ -116,7 +130,13 @@ function onSuccess(position) {
 				if (Questions==undefined || isEquivalent(myQuestions,Questions)==false){
 					confirm("you are close to a quiz point, you want to quiz??");
 					Questions = myQuestions
+					document.getElementById('quiz').style.marginTop = "20px";
+					document.getElementById('quiz').style.lineHeight = "2";
+					document.getElementById('quiz').style.fontSize = "large";
 					quizContainer = document.getElementById('quiz');
+					document.getElementById('results').style.marginTop = "10px";
+					document.getElementById('results').style.lineHeight = "1.3";
+					document.getElementById('results').style.fontSize = "large";
 					resultsContainer = document.getElementById('results');
 					submitButton = document.getElementById('submit');
 					generateQuiz(myQuestions, quizContainer, resultsContainer, submitButton);
@@ -181,6 +201,7 @@ function geoJSONResponse() {
 	  // once the data is ready, process the data
 	  var geoJSONString = client.responseText;
 	  processGeoJSONfile(geoJSONString);
+	  alert(geoJSONString);
   }
 }
 
@@ -188,6 +209,9 @@ var geoJSONquestions = [];
 var geoJSONchoices = [];
 var geoJSONlocations = [];
 var geoJSONanswers = [];
+var geoJSONlocationnames = [];
+var questionpointlayer;
+
 // get GeoJSON file from database
 function processGeoJSONfile(geoJSONString){
 	alert("start processing")
@@ -202,15 +226,32 @@ function processGeoJSONfile(geoJSONString){
 			geoJSONchoices.push([feature.properties.choice_1,feature.properties.choice_2,feature.properties.choice_3,feature.properties.choice_4])
 			geoJSONlocations.push([latlng.lng,latlng.lat])
 			geoJSONanswers.push([feature.properties.correct_answer])
+			geoJSONlocationnames.push([feature.properties.location_name])
 			
-			return L.marker(latlng, {icon:testMarkerBlue}).bindPopup("<b>"+"Name: "+feature.properties.first_name+" "+feature.properties.last_name+"<br />"+feature.properties.module_code+"</b>");
+			if (feature.properties.location_name=="Warren Street Station"){
+				return L.marker(latlng, {icon:testMarkerYellow}).bindPopup("<b>"+"Name: "+feature.properties.first_name+" "+feature.properties.last_name+"<br />"+feature.properties.location_name+"</b>");
+			}else{
+				return L.marker(latlng, {icon:testMarkerBlue}).bindPopup("<b>"+"Name: "+feature.properties.first_name+" "+feature.properties.last_name+"<br />"+feature.properties.location_name+"</b>");
+			}
+			
 		},
     }).addTo(mymap);
+}
+
+
+function StopProcessGeoJSONfile(){
+	alert("Are you Stop the Quiz?");
+	mymap.removeLayer(questionpointlayer);
 }
 
 var testMarkerBlue = L.AwesomeMarkers.icon({
     icon: 'play',
     markerColor: 'blue'
+    });
+	
+var testMarkerYellow = L.AwesomeMarkers.icon({
+    icon: 'play',
+    markerColor: 'yellow'
     });
 
 
@@ -248,6 +289,7 @@ function generateQuiz(questions, quizContainer, resultsContainer, submitButton){
 
         // finally combine our output list into one string of html and put it on the page
         quizContainer.innerHTML = output.join('');
+		// alert(output.join(''));
     }
 
 
@@ -268,14 +310,19 @@ function generateQuiz(questions, quizContainer, resultsContainer, submitButton){
             // if answer is correct
             if(userAnswer==questions[i].correctAnswer){
                 // add to the number of correct answers
-                resultsContainer.innerHTML = 'Correct';
+                resultsContainer.innerHTML = '<font color="green">Correct</font>';
                 
                 // color the answers green
                 answerContainers[i].style.color = 'lightgreen';
             }
             // if answer is wrong or blank
             else{
-				resultsContainer.innerHTML = 'Incorrect';
+				for(letter in questions[i].answers){
+					if (letter == questions[i].correctAnswer){
+						var answer = questions[i].answers[letter];
+					}
+				}
+				resultsContainer.innerHTML = '<font color="red">Incorrect: </font>' + ' Answer is '+ answer;
                 // color the answers red
                 answerContainers[i].style.color = 'red';
             }
@@ -292,13 +339,6 @@ function generateQuiz(questions, quizContainer, resultsContainer, submitButton){
 
 }
 		
-
-function retakeQuiz(){
-	generateQuiz(myQuestions, quizContainer, resultsContainer, submitButton);
-	quizContainer = document.getElementById('quiz');
-	resultsContainer = document.getElementById('results');
-	submitButton = document.getElementById('submit');	
-}
 
 function isEquivalent(a, b) {
     // Create arrays of property names
@@ -329,3 +369,4 @@ function isEquivalent(a, b) {
     // are considered equivalent
     return true;
 }
+
