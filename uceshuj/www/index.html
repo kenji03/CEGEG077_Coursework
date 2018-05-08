@@ -81,7 +81,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 			
   </head>
-  <body onload='trackLocation();getDistance();'>
+  <body onload='trackLocation();'>
     <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
       <header class="demo-header mdl-layout__header mdl-color--grey-800 mdl-color-text--white">
         <div class="mdl-layout__header-row">
@@ -157,9 +157,9 @@
 			<p style="font-size: 1.2em; color: red;">***Please Fill in all Entry Filed</p>
 			<div class="name">
 			<label for="first_name">First Name:</label>
-			<input type="text" size="20" id="firstname"/>
+			<input type="text" size="22" id="firstname" style="margin-bottom: 1em;"/><br />
 			<label for="last_name">Last Name:</label>
-			<input type="text" size="20" id="lastname" />
+			<input type="text" size="22" id="lastname" />
 			</div><br />
 	
 			<p>Module Code</p>
@@ -192,15 +192,11 @@
 	
 			<div class="name">
 			<label for="longitude">Longitude: </label>
-			<input type="text" size="20" id="longitude"/>
+			<input type="text" size="20" id="longitude" style="margin-bottom: 1em;"/><br />
 			<label for="latitude">Latitude: </label>
 			<input type="text" size="20" id="latitude"/>
 			</div><br />
 	
-			<div id="myProgress" style="margin-bottom:0.6em;">
-				<div id="dataUploadResult"></div>
-				<div id="myBar"></div>
-			</div>
 			<p>	
 			<button id="startUpload" onclick="startDataUpload()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
 			Start Data Upload</button>
@@ -213,46 +209,10 @@
 				<!-- the mapid div will hold the map -->
 				<p style="font-size:120%; margin-bottom:0.1em;">Current Location</p>
 				<div id="mapid2" style="width: 400px; height: 300px;"></div>
-            </div>
+             </div>
              
             </div>
-            <div class="demo-separator mdl-cell--1-col"></div>
-            <div class="demo-options mdl-card mdl-color--deep-white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--3-col-tablet mdl-cell--12-col-desktop">
-              <div class="mdl-card__supporting-text mdl-color-text--black">
-                <h3>View options</h3>
-                <ul>
-                  <li>
-                    <label for="chkbox1" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
-                      <input type="checkbox" id="chkbox1" class="mdl-checkbox__input">
-                      <span class="mdl-checkbox__label">Click per object</span>
-                    </label>
-                  </li>
-                  <li>
-                    <label for="chkbox2" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
-                      <input type="checkbox" id="chkbox2" class="mdl-checkbox__input">
-                      <span class="mdl-checkbox__label">Views per object</span>
-                    </label>
-                  </li>
-                  <li>
-                    <label for="chkbox3" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
-                      <input type="checkbox" id="chkbox3" class="mdl-checkbox__input">
-                      <span class="mdl-checkbox__label">Objects selected</span>
-                    </label>
-                  </li>
-                  <li>
-                    <label for="chkbox4" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
-                      <input type="checkbox" id="chkbox4" class="mdl-checkbox__input">
-                      <span class="mdl-checkbox__label">Objects viewed</span>
-                    </label>
-                  </li>
-                </ul>
-              </div>
-              <div class="mdl-card__actions mdl-card--border mdl-color--grey-800">
-                <a href="#" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white">Change location</a>
-                <div class="mdl-layout-spacer"></div>
-                <i class="mdl-color-text--red material-icons">location_on</i>
-              </div>
-            </div>
+            
           </div>
         </div>
       </main>
@@ -260,7 +220,7 @@
  
     <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 	<script src="js/appActivity.js"></script>
-	<script src="js/map2_track_position.js"></script>
-	<script src="js/uploadData.js"></script>
+	<!-- <script src="js/map2_track_position.js"></script> -->
+	<!-- <script src="js/uploadData.js"></script> -->
   </body>
 </html>
